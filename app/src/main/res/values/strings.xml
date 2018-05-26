@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">TripMate</string>
+    <string name="app_tagline">Explore, Plan and Travel</string>
+    <string name="google_login">LOGIN WITH GOOGLE</string>
+</resources>
