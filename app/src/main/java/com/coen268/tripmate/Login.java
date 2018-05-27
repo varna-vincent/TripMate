@@ -1,9 +1,8 @@
-package com.tripmate.coen268.tripmate;
+package com.coen268.tripmate;
 
 import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 public class Login extends Activity {

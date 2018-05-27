@@ -1,4 +1,4 @@
-package com.tripmate.coen268.tripmate;
+package com.coen268.tripmate;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.tripmate.coen268.tripmate", appContext.getPackageName());
+        assertEquals("com.coen268.tripmate", appContext.getPackageName());
     }
 }

@@ -1,4 +1,4 @@
-package com.tripmate.coen268.tripmate;
+package com.coen268.tripmate;
 
 import org.junit.Test;
 
