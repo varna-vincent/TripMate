@@ -53,9 +53,10 @@ public class Login extends Activity {
     }
 
     private void updateUI(GoogleSignInAccount account) {
-
-        Intent homeIntent = new Intent(this, Home.class);
-        startActivity(homeIntent);
+        if (account != null) {
+            Intent homeIntent = new Intent(this, Home.class);
+            startActivity(homeIntent);
+        }
     }
 
     public void login(View view) {
@@ -65,7 +66,6 @@ public class Login extends Activity {
     }
 
     private void signIn() {
-        System.out.println("\n\n-----------------------\nhi");
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -86,7 +86,6 @@ public class Login extends Activity {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             // Signed in successfully, show authenticated UI.
             updateUI(account);
         } catch (ApiException e) {
