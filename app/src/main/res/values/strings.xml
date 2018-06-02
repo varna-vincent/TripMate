@@ -2,4 +2,6 @@
     <string name="app_name">TripMate</string>
     <string name="app_tagline">Explore, Plan and Travel</string>
     <string name="google_login">LOGIN WITH GOOGLE</string>
+    <string name="oath_client_id">676578087984-p4jdgflacn627icajr7r7a2nmobdv5kr.apps.googleusercontent.com</string>
+    <string name="authentication_failed">Authentication Failed.</string>
 </resources>
