@@ -4,4 +4,9 @@
     <string name="google_login">LOGIN WITH GOOGLE</string>
     <string name="oath_client_id">676578087984-p4jdgflacn627icajr7r7a2nmobdv5kr.apps.googleusercontent.com</string>
     <string name="authentication_failed">Authentication Failed.</string>
+    <string name="title_activity_places">Places</string>
+    <string name="tab_text_1">List</string>
+    <string name="tab_text_2">Map</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

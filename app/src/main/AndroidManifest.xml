@@ -16,7 +16,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Home"></activity>
+        <activity android:name=".Home" />
+        <activity
+            android:name=".Places"
+            android:label="@string/title_activity_places"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
