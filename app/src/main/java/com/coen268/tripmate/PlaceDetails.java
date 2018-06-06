@@ -1,10 +1,13 @@
 package com.coen268.tripmate;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +41,14 @@ public class PlaceDetails extends AppCompatActivity {
         String placeId = "ChIJx2utCDvsloARNesiBmb2frc";
         fetchPlaceDetails(placeId);
         getPhotos(placeId);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addToPlan);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), PlaceDetails.class));
+            }
+        });
     }
 
     private void fetchPlaceDetails(String placeId) {
