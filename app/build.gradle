@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.coen268.tripmate"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -31,6 +31,10 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation 'com.google.firebase:firebase-firestore:11.8.0'
+    implementation 'com.google.android.gms:play-services-auth:15.0.1'
+    implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
+    implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
