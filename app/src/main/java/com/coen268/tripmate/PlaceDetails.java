@@ -23,11 +23,13 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import static com.coen268.tripmate.util.Constants.PLACE_NAME;
+
 public class PlaceDetails extends AppCompatActivity {
 
     protected GeoDataClient mGeoDataClient;
-    private static final String TAG = "Place Details";
     CharSequence toastMsg;
+    Place myPlace;
     int duration = Toast.LENGTH_SHORT;
 
     @Override
@@ -46,6 +48,8 @@ public class PlaceDetails extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), PlaceDetails.class);
+                intent.putExtra(PLACE_NAME, myPlace.getName());
                 startActivity(new Intent(getApplicationContext(), PlaceDetails.class));
             }
         });
@@ -59,13 +63,13 @@ public class PlaceDetails extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     PlaceBufferResponse places = task.getResult();
-                    Place myPlace = places.get(0);
+                    myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
-                    Log.i(TAG, "Place found: " + myPlace.getName());
+                    Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
                 } else {
-                    Log.e(TAG, task.getException().toString(), task.getException());
-                    Log.e(TAG, "Place not found.");
+                    Log.e(PLACE_NAME, task.getException().toString(), task.getException());
+                    Log.e(PLACE_NAME, "Place not found.");
                     toastMsg = "Place not found.";
                     Toast toast = Toast.makeText(getApplicationContext(), toastMsg, duration);
                     toast.show();
