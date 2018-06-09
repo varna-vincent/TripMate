@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,7 +41,7 @@ public class PlaceDetails extends AppCompatActivity {
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
-        String placeId = "ChIJx2utCDvsloARNesiBmb2frc";
+        String placeId = "ChIJhYiFmCAKlVQRjC7EI-INETU";
         fetchPlaceDetails(placeId);
         getPhotos(placeId);
 
@@ -115,5 +116,23 @@ public class PlaceDetails extends AppCompatActivity {
     private void updatePlaceDetailsUI(Place myPlace) {
 
         ((TextView) findViewById(R.id.placeName)).setText(myPlace.getName());
+        ((TextView) findViewById(R.id.txtAddress)).setText(myPlace.getAddress());
+        ((TextView) findViewById(R.id.txtPlacePhone)).setText(myPlace.getPhoneNumber());
+        ((TextView) findViewById(R.id.txtPriceLevel)).setText(parsePriceLevel(myPlace.getPriceLevel()));
+        ((RatingBar) findViewById(R.id.txtPlaceRating)).setRating(myPlace.getRating());
+        if(myPlace.getWebsiteUri() != null) {
+            ((TextView) findViewById(R.id.txtWebAddress)).setText(myPlace.getWebsiteUri().toString());
+        }
+    }
+
+    private String parsePriceLevel(int priceLevel) {
+        switch (priceLevel) {
+            case 0: return "($)";
+            case 1: return "($$)";
+            case 2: return "($$$)";
+            case 3: return "($$$$)";
+            case 4: return "($$$$$)";
+            default: return "";
+        }
     }
 }
