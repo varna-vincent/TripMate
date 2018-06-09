@@ -165,16 +165,6 @@ public class PlaceDetails extends AppCompatActivity {
                 alertDialog.show();
             }
         });
-
-        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addToPlan);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), PlaceDetails.class);
-                intent.putExtra(PLACE_NAME, myPlace.getName());
-                startActivity(new Intent(getApplicationContext(), PlaceDetails.class));
-            }
-        });*/
     }
 
     private void fetchPlaceDetails(String placeId) {
