@@ -69,7 +69,6 @@ public class PlaceDetails extends AppCompatActivity {
 
     protected GeoDataClient mGeoDataClient;
     CharSequence toastMsg;
-    Place myPlace;
     int duration = Toast.LENGTH_SHORT;
 
     @Override
@@ -81,6 +80,13 @@ public class PlaceDetails extends AppCompatActivity {
             userEmail = googleSignInAccount.getEmail();
             userName = googleSignInAccount.getDisplayName();
         }
+
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        String placeId = "ChIJhYiFmCAKlVQRjC7EI-INETU";
+        fetchPlaceDetails(placeId);
+        getPhotos(placeId);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseFirestore.getInstance();
@@ -136,7 +142,8 @@ public class PlaceDetails extends AppCompatActivity {
                         destNameRef = planNameRef.document(planName).collection("destinations");
                         String destId = destNameRef.document().getId();
                         Date date = new Date();
-                        DestDetails destDetails = new DestDetails("destname",date);
+                        String destinationName = ((TextView) findViewById(R.id.placeName)).getText().toString();
+                        DestDetails destDetails = new DestDetails(destinationName, date);
                         destNameRef.document(destId).set(destDetails);
                     }
                 });
@@ -159,13 +166,6 @@ public class PlaceDetails extends AppCompatActivity {
             }
         });
 
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-
-        String placeId = "ChIJhYiFmCAKlVQRjC7EI-INETU";
-        fetchPlaceDetails(placeId);
-        getPhotos(placeId);
-
         /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addToPlan);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,7 +185,8 @@ public class PlaceDetails extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     PlaceBufferResponse places = task.getResult();
-                    myPlace = places.get(0);
+
+                    Place myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
                     Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
