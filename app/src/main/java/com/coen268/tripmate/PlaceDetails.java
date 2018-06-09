@@ -43,6 +43,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -58,8 +59,6 @@ public class PlaceDetails extends AppCompatActivity {
     private CollectionReference destNameRef;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore rootRef;
-    private GoogleApiClient googleApiClient;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private Spinner spinner;
     private ArrayList<String> plansList = new ArrayList<>();
     private Button button;
@@ -87,6 +86,12 @@ public class PlaceDetails extends AppCompatActivity {
         String placeId = "ChIJhYiFmCAKlVQRjC7EI-INETU";
         fetchPlaceDetails(placeId);
         getPhotos(placeId);
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        firestore.setFirestoreSettings(settings);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseFirestore.getInstance();
@@ -220,19 +225,23 @@ public class PlaceDetails extends AppCompatActivity {
                 // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
                 PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                 // Get the first photo in the list.
-                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-                // Get the attribution text.
-                CharSequence attribution = photoMetadata.getAttributions();
-                // Get a full-size bitmap for the photo.
-                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-                photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                        PlacePhotoResponse photo = task.getResult();
-                        Bitmap bitmap = photo.getBitmap();
-                        updatePlacePhotoUI(bitmap);
-                    }
-                });
+                if(photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
+
+                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap bitmap = photo.getBitmap();
+                            updatePlacePhotoUI(bitmap);
+                        }
+                    });
+                }
+                photoMetadataBuffer.release();
             }
         });
     }

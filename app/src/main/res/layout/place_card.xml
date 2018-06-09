@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="16dp"
+    android:layout_margin="16dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/placeCardPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/android_gradient_list"
+            android:scaleType="fitXY"/>
+
+        <TextView
+            android:id="@+id/placeCardCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Default Text"
+            android:layout_margin="8dp"/>
+    </LinearLayout>
+</android.support.v7.widget.CardView>
