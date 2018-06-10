@@ -6,4 +6,8 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorGrey">#a3a0a0</color>
     <color name="gold">#f7b708</color>
+    <color name="pale_red">#d48290</color>
+    <color name="pale_blue">#6995d6</color>
+    <color name="pale_green">#b2e78c</color>
+    <color name="pale_yellow">#f1e58b</color>
 </resources>
