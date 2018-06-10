@@ -69,9 +69,17 @@ public class PlaceDetails extends AppCompatActivity {
     private Button button1;
     private Button button2;
 
+    private String destinationName;
+    private Button redButton;
+    private Button blueButton;
+    private Button greenButton;
+    private Button yellowButton;
+
     private TextView textView;
     private TextView textView1;
     private Button setDnT;
+
+    private TravelPlan travelPlan;
 
     protected GeoDataClient mGeoDataClient;
     CharSequence toastMsg;
@@ -110,7 +118,7 @@ public class PlaceDetails extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.addToPlan);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 final AlertDialog builder = new AlertDialog.Builder(PlaceDetails.this).create();
                 final View addPlan = View.inflate(PlaceDetails.this, R.layout.addplans_dialog, null);
                 button = addPlan.findViewById(R.id.add);
@@ -120,6 +128,13 @@ public class PlaceDetails extends AppCompatActivity {
                 spinner = addPlan.findViewById(R.id.spinner);
                 editText = addPlan.findViewById(R.id.edittext);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
+
+                redButton = addPlan.findViewById(R.id.btn_pale_red);
+                blueButton = addPlan.findViewById(R.id.btn_pale_blue);
+                greenButton = addPlan.findViewById(R.id.btn_pale_green);
+                yellowButton = addPlan.findViewById(R.id.btn_pale_yellow);
+
+                travelPlan = new TravelPlan();
 
                 //Retrieve plans created by user and populate spinner
                 planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
@@ -163,6 +178,34 @@ public class PlaceDetails extends AppCompatActivity {
                     }
                 });
 
+                redButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_red));
+                    }
+                });
+
+                blueButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_blue));
+                    }
+                });
+
+                greenButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_green));
+                    }
+                });
+
+                yellowButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_yellow));
+                    }
+                });
+
                 builder.setView(addPlan);
                 builder.show();
             }
@@ -180,6 +223,7 @@ public class PlaceDetails extends AppCompatActivity {
 
                     Place myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
+                    destinationName = myPlace.getName().toString();
                     Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
                 } else {
@@ -196,7 +240,9 @@ public class PlaceDetails extends AppCompatActivity {
     //Function to create a new plan for the user
     private void addPlan(final String planName){
         String planId = planNameRef.document().getId();
-        TravelPlan travelPlan = new TravelPlan(planName,planId);
+        travelPlan.setTripName(planName);
+        travelPlan.setTripId(planId);
+//        TravelPlan travelPlan = new TravelPlan(planName,planId);
         planNameRef.document(planName).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -295,7 +341,7 @@ public class PlaceDetails extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, ''yy 'at' h:mm a");
                         Date day = calendar.getTime();
                         String formatedDate = sdf.format(day);
-                        DestDetails destDetails = new DestDetails("destname",day);
+                        DestDetails destDetails = new DestDetails(destinationName, day);
                         String destId = destNameRef.document().getId();
                         destNameRef.document(destId).set(destDetails);
                         builder2.dismiss();
