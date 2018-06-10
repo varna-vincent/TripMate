@@ -25,6 +25,8 @@
             android:label="@string/title_activity_places"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".PlaceDetails"></activity>
+
+
     </application>
 
 </manifest>
