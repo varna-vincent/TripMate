@@ -1,5 +1,6 @@
 package com.coen268.tripmate;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -14,6 +15,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -41,6 +43,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
@@ -49,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import static com.coen268.tripmate.util.Constants.PLACE_ID;
 import static com.coen268.tripmate.util.Constants.PLACE_NAME;
 
 public class PlaceDetails extends AppCompatActivity {
@@ -59,11 +63,9 @@ public class PlaceDetails extends AppCompatActivity {
     private CollectionReference destNameRef;
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore rootRef;
-    private GoogleApiClient googleApiClient;
-    private FirebaseAuth.AuthStateListener authStateListener;
     private Spinner spinner;
     private ArrayList<String> plansList = new ArrayList<>();
-   private Button button;
+    private Button button;
     private Button button1;
     private Button button2;
 
@@ -73,7 +75,6 @@ public class PlaceDetails extends AppCompatActivity {
 
     protected GeoDataClient mGeoDataClient;
     CharSequence toastMsg;
-    Place myPlace;
     int duration = Toast.LENGTH_SHORT;
 
     @Override
@@ -87,6 +88,20 @@ public class PlaceDetails extends AppCompatActivity {
             userEmail = googleSignInAccount.getEmail();
             userName = googleSignInAccount.getDisplayName();
         }
+
+        // Construct a GeoDataClient.
+        mGeoDataClient = Places.getGeoDataClient(this, null);
+
+        // "ChIJhYiFmCAKlVQRjC7EI-INETU"
+        String placeId = getIntent().getStringExtra(PLACE_ID);
+        fetchPlaceDetails(placeId);
+        getPhotos(placeId);
+
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setTimestampsInSnapshotsEnabled(true)
+                .build();
+        firestore.setFirestoreSettings(settings);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseFirestore.getInstance();
@@ -152,14 +167,6 @@ public class PlaceDetails extends AppCompatActivity {
                 builder.show();
             }
         });
-
-        // Construct a GeoDataClient.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-
-        String placeId = "ChIJx2utCDvsloARNesiBmb2frc";
-        fetchPlaceDetails(placeId);
-        getPhotos(placeId);
-
     }
 
     private void fetchPlaceDetails(String placeId) {
@@ -170,7 +177,8 @@ public class PlaceDetails extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     PlaceBufferResponse places = task.getResult();
-                    myPlace = places.get(0);
+
+                    Place myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
                     Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
@@ -211,19 +219,23 @@ public class PlaceDetails extends AppCompatActivity {
                 // Get the PlacePhotoMetadataBuffer (metadata for all of the photos).
                 PlacePhotoMetadataBuffer photoMetadataBuffer = photos.getPhotoMetadata();
                 // Get the first photo in the list.
-                PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
-                // Get the attribution text.
-                CharSequence attribution = photoMetadata.getAttributions();
-                // Get a full-size bitmap for the photo.
-                Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
-                photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
-                    @Override
-                    public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
-                        PlacePhotoResponse photo = task.getResult();
-                        Bitmap bitmap = photo.getBitmap();
-                        updatePlacePhotoUI(bitmap);
-                    }
-                });
+                if(photoMetadataBuffer != null && photoMetadataBuffer.getCount() > 0) {
+
+                    PlacePhotoMetadata photoMetadata = photoMetadataBuffer.get(0);
+                    // Get the attribution text.
+                    CharSequence attribution = photoMetadata.getAttributions();
+                    // Get a full-size bitmap for the photo.
+                    Task<PlacePhotoResponse> photoResponse = mGeoDataClient.getPhoto(photoMetadata);
+                    photoResponse.addOnCompleteListener(new OnCompleteListener<PlacePhotoResponse>() {
+                        @Override
+                        public void onComplete(@NonNull Task<PlacePhotoResponse> task) {
+                            PlacePhotoResponse photo = task.getResult();
+                            Bitmap bitmap = photo.getBitmap();
+                            updatePlacePhotoUI(bitmap);
+                        }
+                    });
+                }
+                photoMetadataBuffer.release();
             }
         });
     }
@@ -236,6 +248,24 @@ public class PlaceDetails extends AppCompatActivity {
     private void updatePlaceDetailsUI(Place myPlace) {
 
         ((TextView) findViewById(R.id.placeName)).setText(myPlace.getName());
+        ((TextView) findViewById(R.id.txtAddress)).setText(myPlace.getAddress());
+        ((TextView) findViewById(R.id.txtPlacePhone)).setText(myPlace.getPhoneNumber());
+        ((TextView) findViewById(R.id.txtPriceLevel)).setText(parsePriceLevel(myPlace.getPriceLevel()));
+        ((RatingBar) findViewById(R.id.txtPlaceRating)).setRating(myPlace.getRating());
+        if(myPlace.getWebsiteUri() != null) {
+            ((TextView) findViewById(R.id.txtWebAddress)).setText(myPlace.getWebsiteUri().toString());
+        }
+    }
+
+    private String parsePriceLevel(int priceLevel) {
+        switch (priceLevel) {
+            case 0: return "($)";
+            case 1: return "($$)";
+            case 2: return "($$$)";
+            case 3: return "($$$$)";
+            case 4: return "($$$$$)";
+            default: return "";
+        }
     }
 
 
