@@ -49,6 +49,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 
+import static com.coen268.tripmate.util.Constants.PLACE_ID;
 import static com.coen268.tripmate.util.Constants.PLACE_NAME;
 
 public class PlaceDetails extends AppCompatActivity {
@@ -83,7 +84,8 @@ public class PlaceDetails extends AppCompatActivity {
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
-        String placeId = "ChIJhYiFmCAKlVQRjC7EI-INETU";
+        // "ChIJhYiFmCAKlVQRjC7EI-INETU"
+        String placeId = getIntent().getStringExtra(PLACE_ID);
         fetchPlaceDetails(placeId);
         getPhotos(placeId);
 

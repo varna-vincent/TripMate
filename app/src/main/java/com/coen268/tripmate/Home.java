@@ -1,5 +1,6 @@
 package com.coen268.tripmate;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -10,11 +11,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.Layout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.coen268.tripmate.models.PlaceResponse;
@@ -37,6 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
+import static com.coen268.tripmate.util.Constants.PLACE_ID;
 
 public class Home extends AppCompatActivity {
 
@@ -75,6 +79,7 @@ public class Home extends AppCompatActivity {
             placeResult.addOnCompleteListener(new OnCompleteListener<PlaceLikelihoodBufferResponse>() {
                 @Override
                 public void onComplete(@NonNull Task<PlaceLikelihoodBufferResponse> task) {
+                    Log.i(HOME_PLACES, "here");
 
                     PlaceLikelihoodBufferResponse likelyPlaces = task.getResult();
                     PlaceResponse placeResponse;
@@ -137,13 +142,6 @@ public class Home extends AppCompatActivity {
         startActivity(new Intent(this, Login.class));
     }
 
-    public void search(View view) {
-
-        Intent intent = new Intent(this, com.coen268.tripmate.Places.class);
-        intent.putExtra(Constants.SEARCH_STRING, "hi");
-        startActivity(intent);
-    }
-
     private class PlaceRecyclerAdapter extends RecyclerView.Adapter<PlaceCardHolder> {
 
         @NonNull
@@ -160,6 +158,7 @@ public class Home extends AppCompatActivity {
             Log.i(HOME_PLACES, placeResponseList.get(position).getName());
             holder.getPlaceCardCaption().setText(placeResponseList.get(position).getName());
             setPhotoByPlaceId(holder.getPlaceCardPhoto(), placeResponseList.get(position).getId());
+            setPlaceItemClickListener(holder.getParentLayout(), placeResponseList.get(position).getId());
         }
 
         @Override
@@ -168,17 +167,38 @@ public class Home extends AppCompatActivity {
         }
     }
 
+    private void setPlaceItemClickListener(LinearLayout parentLayout, final String placeId) {
+        final Activity self = this;
+        parentLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(self, PlaceDetails.class);
+                intent.putExtra(PLACE_ID, placeId);
+                startActivity(intent);
+            }
+        });
+    }
+
     private class PlaceCardHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout parentLayout;
         ImageView placeCardPhoto;
-
         TextView placeCardCaption;
 
         public PlaceCardHolder(View itemView) {
 
             super(itemView);
+            parentLayout = (LinearLayout) itemView.findViewById(R.id.parentLayout);
             placeCardPhoto = (ImageView) itemView.findViewById(R.id.placeCardPhoto);
             placeCardCaption = (TextView) itemView.findViewById(R.id.placeCardCaption);
+        }
+
+        public LinearLayout getParentLayout() {
+            return parentLayout;
+        }
+
+        public void setParentLayout(LinearLayout parentLayout) {
+            this.parentLayout = parentLayout;
         }
 
         public ImageView getPlaceCardPhoto() {

@@ -6,6 +6,7 @@ import com.google.android.gms.location.places.Place;
 
 public class PlaceResponse {
 
+    private String id;
     private String name;
     private Bitmap image;
 
@@ -16,8 +17,6 @@ public class PlaceResponse {
     public void setId(String id) {
         this.id = id;
     }
-
-    private String id;
 
     public String getName() {
         return name;
@@ -39,9 +38,11 @@ public class PlaceResponse {
     public String toString() {
 
         System.out.println("\n\nPlace Name : " + getName()
-                + "\nPlace Image : " + image);
+                + "\nPlace Image : " + image
+                + "\nPlace Id : " + getId());
 
         return "\n\nPlace Name : " + getName()
-                + "\nPlace Image : " + image;
+                + "\nPlace Image : " + image
+                + "\nPlace Id : " + getId();
     }
 }
