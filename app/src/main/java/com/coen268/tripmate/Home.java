@@ -99,7 +99,11 @@ public class Home extends AppCompatActivity {
             });
         }
     }
-
+    public void search(View view) {
+        Intent intent = new Intent(this, PlaceDetails.class);
+        intent.putExtra(PLACE_ID, "ChIJhYiFmCAKlVQRjC7EI-INETU");
+        startActivity(intent);
+    }
     private void setPhotoByPlaceId(final ImageView imageView, String placeId) {
 
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);

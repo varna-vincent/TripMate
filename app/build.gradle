@@ -37,6 +37,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
+    implementation project(':slideDateTimePicker')
+
 }
 
 apply plugin: 'com.google.gms.google-services'
