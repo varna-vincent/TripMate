@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.coen268.tripmate.models.PlaceResponse;
+import com.coen268.tripmate.models.TravelPlan;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.location.places.PlaceLikelihood;
@@ -50,16 +51,14 @@ import java.util.List;
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
 
-public class PlanPage extends NavigationDrawer {
+public class PlanPage extends AppCompatActivity {
 
     private static final String LIST_STATE_KEY = "list-state";
     private RecyclerView myPlansView;
-    private ArrayList<PlaceCardHolder> placeResponseList;
     private Bundle mBundleRecyclerViewState;
     private PlaceRecyclerAdapter mAdapter;
 
-    private ArrayList<String> plansList = new ArrayList<>();
-    private ArrayList<String> plansColor = new ArrayList<>();
+    private List<TravelPlan> plans;
     private CollectionReference planNameRef;
 
     public String userEmail;
@@ -72,8 +71,7 @@ public class PlanPage extends NavigationDrawer {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_plan_page, frameLayout);
-        //setContentView(R.layout.activity_plan_page);
+        setContentView(R.layout.activity_plan_page);
         myPlansView = (RecyclerView) findViewById(R.id.my_plans_recyclerview);
         myPlansView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mAdapter = new PlaceRecyclerAdapter();
@@ -86,10 +84,7 @@ public class PlanPage extends NavigationDrawer {
         }
         planNameRef = rootRef.collection("Plans").document(userEmail).collection("userPlans");
 
-        ArrayList<String> namesList = new ArrayList<String>();
-
-        plansList = retrieveUserPlans();
-        plansColor = retrieveUserPlansColors();
+        retrieveUserPlans();
         mAdapter.notifyDataSetChanged();
 
     }
@@ -128,20 +123,21 @@ public class PlanPage extends NavigationDrawer {
         @Override
         public PlaceCardHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-            View view = LayoutInflater.from(PlanPage.this).inflate(R.layout.place_card, parent, false);
+            View view = LayoutInflater.from(PlanPage.this).inflate(R.layout.plan_card, parent, false);
             return new PlaceCardHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull PlaceCardHolder holder, int position) {
-            Log.i(HOME_PLACES, plansList.get(position));
-            holder.getPlaceCardCaption().setText(plansList.get(position));
-            setPlaceItemClickListener(holder.getParentLayout(), plansList.get(position));
+            Log.i(HOME_PLACES, plans.get(position).getTripName());
+            holder.getPlaceCardCaption().setText(plans.get(position).getTripName());
+            holder.getParentLayout().setBackgroundColor(plans.get(position).getColor());
+            setPlaceItemClickListener(holder.getParentLayout(), plans.get(position).getTripName());
         }
 
         @Override
         public int getItemCount() {
-            return plansList.size();
+            return plans.size();
         }
     }
 
@@ -165,8 +161,8 @@ public class PlanPage extends NavigationDrawer {
         public PlaceCardHolder(View itemView) {
 
             super(itemView);
-            parentLayout = (LinearLayout) itemView.findViewById(R.id.parentLayout);
-            placeCardCaption = (TextView) itemView.findViewById(R.id.placeCardCaption);
+            parentLayout = (LinearLayout) itemView.findViewById(R.id.parentPlanLayout);
+            placeCardCaption = (TextView) itemView.findViewById(R.id.planCardCaption);
         }
 
         public LinearLayout getParentLayout() {
@@ -186,33 +182,22 @@ public class PlanPage extends NavigationDrawer {
         }
     }
 
-    public ArrayList<String> retrieveUserPlans(){
+    public void retrieveUserPlans(){
+        plans = new ArrayList<>();
         planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                plansList.clear();
+                TravelPlan travelPlan;
                 for (DocumentSnapshot snapshot : documentSnapshots){
-                    plansList.add(snapshot.getString("tripName"));
-                    Log.i("plans - ", snapshot.getString("tripName"));
+                    travelPlan = new TravelPlan();
+                    travelPlan.setTripId(snapshot.getString("tripId"));
+                    travelPlan.setTripName(snapshot.getString("tripName"));
+                    travelPlan.setColor(Integer.parseInt(snapshot.getString("color").trim()));
+                    plans.add(travelPlan);
                 }
                 mAdapter.notifyDataSetChanged();
             }
         });
-        return plansList;
-    }
-
-    public ArrayList<String> retrieveUserPlansColors(){
-        planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
-                plansColor.clear();
-                for (DocumentSnapshot snapshot : documentSnapshots){
-                    plansColor.add(snapshot.getString("color"));
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-        return plansColor;
     }
 }
 

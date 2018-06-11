@@ -11,7 +11,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAIashPBJ0qlaSCq4P0fgGy-vQkOLrtM9s" />
@@ -32,13 +32,9 @@
             android:label="@string/title_activity_places"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".PlaceDetails" />
-        <activity android:name=".PlaceFragment" />
-        <activity android:name=".PlanPage" />
+        <activity android:name=".PlaceFragment"></activity>
+        <activity android:name=".PlanPage"></activity>
         <activity android:name=".PlanDetails" />
-        <activity
-            android:name=".NavigationDrawer"
-            android:label="@string/title_activity_navigation_drawer"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>
