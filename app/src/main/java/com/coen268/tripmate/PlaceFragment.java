@@ -44,6 +44,7 @@ public class PlaceFragment extends AppCompatActivity {
         input = "Sydney";
         fetchPlaces(input);
 
+
         firstFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +59,8 @@ public class PlaceFragment extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void fetchPlaces(String input) {
         placeResponseList = new ArrayList<>();
