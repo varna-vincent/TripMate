@@ -12,7 +12,6 @@ public class TravelPlan {
     public TravelPlan() { this.color = "#a3a0a0"; }
 
     public TravelPlan(String tripName, String tripId){
-
         this.tripName=tripName;
         this.tripId = tripId;
     }

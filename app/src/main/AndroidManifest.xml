@@ -33,6 +33,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".PlaceDetails" />
         <activity android:name=".PlaceFragment"></activity>
+        <activity android:name=".PlanPage"></activity>
     </application>
 
 </manifest>

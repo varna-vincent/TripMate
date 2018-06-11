@@ -1,4 +1,8 @@
-//package com.coen268.tripmate;
+package com.coen268.tripmate;
+
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
 //
 //import android.content.Intent;
 //import android.os.Handler;
@@ -36,7 +40,7 @@
 //
 //import static com.firebase.ui.auth.AuthUI.getApplicationContext;
 //
-//public class Places extends AppCompatActivity {
+public class Places extends AppCompatActivity {
 //
 //    String latlng = "";
 //    private List<PlaceResponse> placeResponseList;
@@ -56,10 +60,10 @@
 //     */
 //    private ViewPager mViewPager;
 //
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_places);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_places);
 //
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
@@ -92,7 +96,7 @@
 //
 //        fetchPlaces(latlng);
 //
-//    }
+    }
 //
 //    private void fetchPlaces(String latlng) {
 //        placeResponseList = new ArrayList<>();
@@ -269,4 +273,4 @@
 //            latlng = locationAddress;
 //        }
 //    }
-//}
+}

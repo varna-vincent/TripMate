@@ -58,6 +58,8 @@ import static com.coen268.tripmate.util.Constants.PLACE_NAME;
 public class PlaceDetails extends AppCompatActivity {
     private String userName;
     private String userEmail;
+    private String planName;
+
     private EditText editText;
     private CollectionReference planNameRef;
     private CollectionReference destNameRef;
@@ -65,11 +67,17 @@ public class PlaceDetails extends AppCompatActivity {
     private FirebaseFirestore rootRef;
     private Spinner spinner;
     private ArrayList<String> plansList = new ArrayList<>();
+    private ArrayList<String> destsList = new ArrayList<>();
+    private ArrayList<Date> dates = new ArrayList<>();
+
+
     private Button button;
     private Button button1;
     private Button button2;
 
     private String destinationName;
+    private String destinationAddress;
+
     private Button redButton;
     private Button blueButton;
     private Button greenButton;
@@ -105,11 +113,6 @@ public class PlaceDetails extends AppCompatActivity {
         fetchPlaceDetails(placeId);
         getPhotos(placeId);
 
-        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
-        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
-                .setTimestampsInSnapshotsEnabled(true)
-                .build();
-        firestore.setFirestoreSettings(settings);
 
         firebaseAuth = FirebaseAuth.getInstance();
         rootRef = FirebaseFirestore.getInstance();
@@ -137,6 +140,7 @@ public class PlaceDetails extends AppCompatActivity {
                 travelPlan = new TravelPlan();
 
                 //Retrieve plans created by user and populate spinner
+               // retrieveUserPlans();
                 planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -149,6 +153,9 @@ public class PlaceDetails extends AppCompatActivity {
                         spinner.setAdapter(adapter);
                     }
                 });
+
+
+
                 //On Add to Plan button click
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -159,17 +166,25 @@ public class PlaceDetails extends AppCompatActivity {
                         setDateandTime();
                     }
                 });
+
                 //On Create Plan and Add button click
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        String planName = editText.getText().toString();
+                        planName = editText.getText().toString();
+                        if (planName.matches("")) {
+                            Toast.makeText(PlaceDetails.this, "You did not enter a plan name", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        else {
                         addPlan(planName);
                         builder.dismiss();
                         setDateandTime();
+                        }
 
                     }
                 });
+
                 //On Cancel button click
                 button2.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -224,6 +239,7 @@ public class PlaceDetails extends AppCompatActivity {
                     Place myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
                     destinationName = myPlace.getName().toString();
+                    destinationAddress = myPlace.getAddress().toString();
                     Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
                 } else {
@@ -240,9 +256,8 @@ public class PlaceDetails extends AppCompatActivity {
     //Function to create a new plan for the user
     private void addPlan(final String planName){
         String planId = planNameRef.document().getId();
-        travelPlan.setTripName(planName);
         travelPlan.setTripId(planId);
-//        TravelPlan travelPlan = new TravelPlan(planName,planId);
+        travelPlan.setTripName(planName);
         planNameRef.document(planName).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
@@ -341,9 +356,9 @@ public class PlaceDetails extends AppCompatActivity {
                         SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, ''yy 'at' h:mm a");
                         Date day = calendar.getTime();
                         String formatedDate = sdf.format(day);
-                        DestDetails destDetails = new DestDetails(destinationName, day);
+                        DestDetails destDetails = new DestDetails(destinationName, destinationAddress, day);
                         String destId = destNameRef.document().getId();
-                        destNameRef.document(destId).set(destDetails);
+                        destNameRef.document(destinationName).set(destDetails);
                         builder2.dismiss();
                     }
                 });
@@ -355,4 +370,46 @@ public class PlaceDetails extends AppCompatActivity {
         builder1.setView(dialogView);
         builder1.show();
     }
+
+    //function to retrieve list of user plans into an array
+    public ArrayList<String> retrieveUserPlans(){
+        planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                plansList.clear();
+                for (DocumentSnapshot snapshot : documentSnapshots){
+                    plansList.add(snapshot.getString("tripName"));
+                }
+            }
+        });
+        return plansList;
+    }
+
+    public ArrayList<String> retrievePlanDestNames(String planName){
+        destNameRef = planNameRef.document(planName).collection("destinations");
+        destNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                destsList.clear();
+                for (DocumentSnapshot snapshot : documentSnapshots){
+                    destsList.add(snapshot.getString("destName"));
+                }
+            }
+        });
+        return destsList;
+    }
+    public ArrayList<Date> retrievePlanDestDates(String planName){
+        destNameRef = planNameRef.document(planName).collection("destinations");
+        destNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                dates.clear();
+                for (DocumentSnapshot snapshot : documentSnapshots){
+                    dates.add(snapshot.getDate("date"));
+                }
+            }
+        });
+        return dates;
+    }
+
 }
