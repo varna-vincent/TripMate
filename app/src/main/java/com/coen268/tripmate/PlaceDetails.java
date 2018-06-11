@@ -256,7 +256,8 @@ public class PlaceDetails extends AppCompatActivity {
     //Function to create a new plan for the user
     private void addPlan(final String planName){
         String planId = planNameRef.document().getId();
-        TravelPlan travelPlan = new TravelPlan(planName,planId);
+        travelPlan.setTripId(planId);
+        travelPlan.setTripName(planName);
         planNameRef.document(planName).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
