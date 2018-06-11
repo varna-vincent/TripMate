@@ -41,32 +41,22 @@ public class PlaceFragment extends AppCompatActivity {
         firstFragment = (Button) findViewById(R.id.firstFragment);
         secondFragment = (Button) findViewById(R.id.secondFragment);
 
-       /* GeocodingLocation locationAddress = new GeocodingLocation();
-        locationAddress.getAddressFromLocation("Sydney",
-                getApplicationContext(), new GeocoderHandler());
-                */
-
         input = "Sydney";
         fetchPlaces(input);
-
 
         firstFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 loadFragment(new PlacesList(), 0);
             }
         });
 
-
         secondFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 loadFragment(new PlacesMap(), 1);
             }
         });
-
     }
 
     private void fetchPlaces(String input) {
