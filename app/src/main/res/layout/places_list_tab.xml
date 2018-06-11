@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:id="@+id/place_list_tab_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".PlacesList">
 
-    <android.support.v7.app.widget.RecyclerView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/textsearch_places_recyclerview"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id= "@+id/fragmentListRecyclerView"
-        />
-
-
-
-
-</LinearLayout>
+        android:layout_height="match_parent"/>
+</android.support.constraint.ConstraintLayout>

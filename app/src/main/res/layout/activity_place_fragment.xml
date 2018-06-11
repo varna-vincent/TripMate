@@ -5,30 +5,39 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EBF5FB"
     tools:context=".PlaceFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="#EBF5FB"
         android:id="@+id/button_part"
         >
 
         <Button
             android:id="@+id/firstFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:text="List View"
-            android:textSize="10sp"
-            android:layout_weight="1"/>
+            android:textSize="17sp"
+            android:background="#85C1E9"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            android:textColor="#1B4F72"/>
 
         <Button
             android:id="@+id/secondFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Map View"
-            android:textSize="10sp" />
+            android:textSize="17sp"
+            android:background="#85C1E9"
+            android:layout_margin="8dp"
+            android:textColor="#1B4F72"
+            />
 
 
 
@@ -38,8 +47,6 @@
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        >
-    </FrameLayout>
+       ></FrameLayout>
 
 </LinearLayout>
