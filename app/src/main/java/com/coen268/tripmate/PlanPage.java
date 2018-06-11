@@ -59,6 +59,7 @@ public class PlanPage extends AppCompatActivity {
     private PlaceRecyclerAdapter mAdapter;
 
     private ArrayList<String> plansList = new ArrayList<>();
+    private ArrayList<String> plansColor = new ArrayList<>();
     private CollectionReference planNameRef;
 
     public String userEmail;
@@ -88,9 +89,10 @@ public class PlanPage extends AppCompatActivity {
         placeResponseList = new ArrayList<>();
         ArrayList<String> namesList = new ArrayList<String>();
 
-        namesList = retrieveUserPlans();
+        plansList = retrieveUserPlans();
+        plansColor = retrieveUserPlansColors();
         PlaceResponse temp = new PlaceResponse();
-        
+
     }
 
     @Override
@@ -134,9 +136,9 @@ public class PlanPage extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull PlaceCardHolder holder, int position) {
 
-            Log.i(HOME_PLACES, placeResponseList.get(position).getName());
-            holder.getPlaceCardCaption().setText(placeResponseList.get(position).getName());
-            setPlaceItemClickListener(holder.getParentLayout(), placeResponseList.get(position).getId());
+            //Log.i(HOME_PLACES, placeResponseList.get(position).getName());
+            //holder.getPlaceCardCaption().setText(placeResponseList.get(position).getName());
+            //setPlaceItemClickListener(holder.getParentLayout(), placeResponseList.get(position).getId());
         }
 
         @Override
@@ -197,6 +199,19 @@ public class PlanPage extends AppCompatActivity {
             }
         });
         return plansList;
+    }
+
+    public ArrayList<String> retrieveUserPlansColors(){
+        planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
+                plansColor.clear();
+                for (DocumentSnapshot snapshot : documentSnapshots){
+                    plansColor.add(snapshot.getString("color"));
+                }
+            }
+        });
+        return plansColor;
     }
 }
 

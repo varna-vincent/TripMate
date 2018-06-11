@@ -14,6 +14,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 public class NavigationDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -53,10 +55,11 @@ public class NavigationDrawer extends AppCompatActivity
         }
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.navigation_drawer, menu);
+        //getMenuInflater().inflate(R.menu.navigation_drawer, menu);
         return true;
     }
 
@@ -82,14 +85,20 @@ public class NavigationDrawer extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.myPlans) {
-            Intent intent = new Intent( getBaseContext(), PlanDetails.class );
+            Intent intent = new Intent( getBaseContext(), PlanPage.class );
             startActivity( intent );
         } else if (id == R.id.logout) {
-
+            logout();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+
+    public void logout() {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(this, Login.class));
     }
 }

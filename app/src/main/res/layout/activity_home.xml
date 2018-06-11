@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Home">
 
+        <!--
+    <include
+        layout="@layout/app_bar_navigation_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+        -->
     <Button
         android:id="@+id/search"
         android:layout_width="match_parent"
@@ -29,4 +37,15 @@
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+        <!--
+    <android.support.design.widget.NavigationView
+        android:id="@+id/nav_view"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header_navigation_drawer"
+        app:menu="@menu/activity_navigation_drawer_drawer" />
+            -->
 </android.support.constraint.ConstraintLayout>
