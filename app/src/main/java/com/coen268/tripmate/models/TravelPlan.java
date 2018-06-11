@@ -6,10 +6,10 @@ public class TravelPlan {
 
     private String tripName;
 
-    private int color;
+    private String color;
 
 
-    public TravelPlan() { this.color = -5052532; }
+    public TravelPlan() { this.color = "#a3a0a0"; }
 
     public TravelPlan(String tripName, String tripId){
         this.tripName=tripName;
@@ -32,11 +32,11 @@ public class TravelPlan {
         this.tripName = tripName;
     }
 
-    public int getColor() {
+    public String getColor() {
         return color;
     }
 
-    public void setColor(int color) {
+    public void setColor(String color) {
         this.color = color;
     }
 }
