@@ -49,6 +49,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
@@ -222,5 +223,7 @@ public class PlanPage extends AppCompatActivity {
         });
         return plansColor;
     }
+
+
 }
 
