@@ -1,5 +1,6 @@
 package com.coen268.tripmate;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -51,7 +52,7 @@ import java.util.List;
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
 
-public class Home extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener  {
+public class Home extends AppCompatActivity  {
 
     private static final String LIST_STATE_KEY = "list-state";
     private RecyclerView nearbyPlacesView;
@@ -134,7 +135,15 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
 
         Task<PlaceLikelihoodBufferResponse> placeResult = null;
         placeResponseList = new ArrayList<>();
+        final  int REQUEST_CODE_ASK_PERMISSIONS = 123;
+        /*if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
 
+
+            requestPermissions(new String[] {Manifest.permission.READ_CONTACTS},
+                    REQUEST_CODE_ASK_PERMISSIONS);
+
+         }
+*/
         if ( ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_COARSE_LOCATION ) != PackageManager.PERMISSION_DENIED ) {
 
             placeResult = mPlaceDetectionClient.getCurrentPlace(null);
@@ -317,23 +326,23 @@ public class Home extends AppCompatActivity  implements NavigationView.OnNavigat
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.myPlans) {
-            Intent intent = new Intent( getBaseContext(), PlanPage.class );
-            startActivity( intent );
-        } else if (id == R.id.logout) {
-            logout();
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
+//    @SuppressWarnings("StatementWithEmptyBody")
+//    @Override
+//    public boolean onNavigationItemSelected(MenuItem item) {
+//        // Handle navigation view item clicks here.
+//        int id = item.getItemId();
+//
+//        if (id == R.id.myPlans) {
+//            Intent intent = new Intent( getBaseContext(), PlanPage.class );
+//            startActivity( intent );
+//        } else if (id == R.id.logout) {
+//            logout();
+//        }
+//
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawer.closeDrawer(GravityCompat.START);
+//        return true;
+//    }
 
 
     public void logout() {
