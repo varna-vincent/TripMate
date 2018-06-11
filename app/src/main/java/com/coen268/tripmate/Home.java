@@ -27,11 +27,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.coen268.tripmate.models.PlaceResponse;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.places.PlaceLikelihood;
 import com.google.android.gms.location.places.PlaceLikelihoodBufferResponse;
 import com.google.android.gms.location.places.PlacePhotoMetadata;
@@ -43,11 +49,17 @@ import com.google.android.gms.location.places.Places;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
@@ -61,6 +73,13 @@ public class Home extends AppCompatActivity  {
     private List<PlaceResponse> placeResponseList;
     private Bundle mBundleRecyclerViewState;
     private PlaceRecyclerAdapter mAdapter;
+    private EditText searchHere;
+    private String userName;
+    private String userEmail;
+    private FirebaseAuth firebaseAuth;
+    private FirebaseFirestore rootRef;
+    private GoogleApiClient googleApiClient;
+    private FirebaseAuth.AuthStateListener authStateListener;
 
 
     @Override
@@ -68,14 +87,36 @@ public class Home extends AppCompatActivity  {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+       // getLayoutInflater().inflate(R.layout.activity_home, content);
 
+        GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
+        if(googleSignInAccount!=null){
+            userEmail = googleSignInAccount.getEmail();
+            userName = googleSignInAccount.getDisplayName();
+        }
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API)
+                .build();
+
+        firebaseAuth = FirebaseAuth.getInstance();
+        rootRef = FirebaseFirestore.getInstance();
+        authStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
+                if(firebaseUser== null){
+                    Intent intent = new Intent(Home.this, Login.class);
+                    startActivity(intent);
+                }
+            }
+        };
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
         // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
 
-
+        searchHere = (EditText) findViewById(R.id.search_text);
         nearbyPlacesView = (RecyclerView) findViewById(R.id.nearby_places_recyclerview);
         nearbyPlacesView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mAdapter = new PlaceRecyclerAdapter();
@@ -131,6 +172,46 @@ public class Home extends AppCompatActivity  {
         }
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        googleApiClient.connect();
+        firebaseAuth.addAuthStateListener(authStateListener);
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        switch(item.getItemId()){
+            case R.id.signout:
+                signOut();
+                return true;
+            case R.id.planner:
+                Intent intent = new Intent(Home.this,PlanPage.class);
+                startActivity(intent);
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void signOut() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("tokenId", FieldValue.delete());
+        rootRef.collection("users").document(userEmail).update(map).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                firebaseAuth.signOut();
+                if (googleApiClient.isConnected()) {
+                    Auth.GoogleSignInApi.signOut(googleApiClient);
+                }
+            }
+        });
+    }
     private void fetchPlacesNearMe(final PlaceRecyclerAdapter adapter) {
 
         Task<PlaceLikelihoodBufferResponse> placeResult = null;
@@ -171,9 +252,16 @@ public class Home extends AppCompatActivity  {
         }
     }
     public void search(View view) {
-        Intent intent = new Intent(this, com.coen268.tripmate.PlaceFragment.class);
-        intent.putExtra(PLACE_ID, "ChIJhYiFmCAKlVQRjC7EI-INETU");
-        startActivity(intent);
+        String search = searchHere.getText().toString();
+        if(search.equals("")){
+            Toast.makeText(this, "Enter City Name", Toast.LENGTH_LONG).show();
+        }
+        else {
+            Intent intent = new Intent(this, com.coen268.tripmate.PlaceFragment.class);
+            intent.putExtra("SearchString", search);
+            startActivity(intent);
+        }
+
     }
     private void setPhotoByPlaceId(final ImageView imageView, String placeId) {
 
@@ -304,27 +392,27 @@ public class Home extends AppCompatActivity  {
     }
 
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+   // @Override
+   // public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         //getMenuInflater().inflate(R.menu.navigation_drawer, menu);
-        return true;
-    }
+     //   return true;
+   // }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    //@Override
+    //public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+      //  int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
+        //if (id == R.id.action_settings) {
+          //  return true;
+        //}
 
-        return super.onOptionsItemSelected(item);
-    }
+        //return super.onOptionsItemSelected(item);
+    //}
 
 //    @SuppressWarnings("StatementWithEmptyBody")
 //    @Override

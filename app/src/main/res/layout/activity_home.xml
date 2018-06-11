@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -14,29 +14,70 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
         -->
-    <Button
-        android:id="@+id/search"
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="search"
-        android:text="Search" />
-    <Button
-        android:id="@+id/Logout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginRight="8dp"
-        android:onClick="logout"
-        android:text="Logout"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:id = "@+id/search_bar"
+        android:background="#EBF5FB"
+
+        >
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/search_text"
+            android:hint="Enter City Name Here.."
+            android:background="#EBF5FB"/>
+
+        <Button
+            android:id="@+id/search"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textSize="15sp"
+            android:onClick="search"
+            android:text="Search"
+            android:background="#85C1E9"
+            android:textColor="#1B4F72"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight = "8"
+        android:id = "@+id/home_page_recycler_view"
+        android:layout_below="@id/search_bar">
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/nearby_places_recyclerview"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1"
+        android:layout_below="@+id/home_page_recycler_view">
+        <Button
+            android:id="@+id/Logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:onClick="logout"
+            android:text="Logout"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+
+    </LinearLayout>
+
 
         <!--
     <android.support.design.widget.NavigationView
@@ -48,4 +89,4 @@
         app:headerLayout="@layout/nav_header_navigation_drawer"
         app:menu="@menu/activity_navigation_drawer_drawer" />
             -->
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

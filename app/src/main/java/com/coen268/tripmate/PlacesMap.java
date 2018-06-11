@@ -79,9 +79,10 @@ public class PlacesMap  extends Fragment implements OnMapReadyCallback {
             googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             latLng = new LatLng(Double.parseDouble(lat.get(i)), Double.parseDouble(lng.get(i)));
             mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(placename.get(i)));
-            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 13f));
+            mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f));
         }
 
     }
+
 }
 

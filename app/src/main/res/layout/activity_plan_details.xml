@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#EBF5FB"
     android:layout_height="match_parent"
     tools:context=".PlanDetails">
 
@@ -28,6 +29,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:onClick="clickDeleteButton"
+        android:background="#85C1E9"
+        android:textColor="#1B4F72"
         android:text="Delete"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,6 +44,8 @@
         android:layout_marginTop="8dp"
         android:onClick="clickShareButton"
         android:text="Share"
+        android:background="#85C1E9"
+        android:textColor="#1B4F72"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -53,8 +58,9 @@
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginStart="8dp"
-        android:text="My Plan"
         android:textSize="20sp"
+        android:gravity="center_horizontal"
+        android:textColor="#1B4F72"
         app:layout_constraintBottom_toTopOf="@+id/myListView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

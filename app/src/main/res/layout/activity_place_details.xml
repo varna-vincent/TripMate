@@ -83,10 +83,6 @@
         android:layout_marginRight="16dp"
         app:srcCompat="@android:drawable/ic_input_add" />
 
-    <Button
-        android:id="@+id/plan"
-        android:text="Plans"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+
 
 </LinearLayout>
