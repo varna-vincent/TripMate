@@ -73,8 +73,7 @@ public class PlanPage extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_page);
-        
-        myPlansView = (RecyclerView) findViewById(R.id.nearby_places_recyclerview);
+        myPlansView = (RecyclerView) findViewById(R.id.my_plans_recyclerview);
         myPlansView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
         mAdapter = new PlaceRecyclerAdapter();
         myPlansView.setAdapter(mAdapter);
@@ -86,12 +85,11 @@ public class PlanPage extends AppCompatActivity {
         }
         planNameRef = rootRef.collection("Plans").document(userEmail).collection("userPlans");
 
-        placeResponseList = new ArrayList<>();
         ArrayList<String> namesList = new ArrayList<String>();
 
         plansList = retrieveUserPlans();
         plansColor = retrieveUserPlansColors();
-        PlaceResponse temp = new PlaceResponse();
+        mAdapter.notifyDataSetChanged();
 
     }
 
@@ -135,25 +133,24 @@ public class PlanPage extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull PlaceCardHolder holder, int position) {
-
-            //Log.i(HOME_PLACES, placeResponseList.get(position).getName());
-            //holder.getPlaceCardCaption().setText(placeResponseList.get(position).getName());
-            //setPlaceItemClickListener(holder.getParentLayout(), placeResponseList.get(position).getId());
+            Log.i(HOME_PLACES, plansList.get(position));
+            holder.getPlaceCardCaption().setText(plansList.get(position));
+            setPlaceItemClickListener(holder.getParentLayout(), plansList.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return placeResponseList.size();
+            return plansList.size();
         }
     }
 
-    private void setPlaceItemClickListener(LinearLayout parentLayout, final String planID) {
+    private void setPlaceItemClickListener(LinearLayout parentLayout, final String planName) {
         final Activity self = this;
         parentLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(self, PlanDetails.class);
-                intent.putExtra("plan", planID);
+                intent.putExtra("plan", planName);
                 startActivity(intent);
             }
         });
@@ -195,7 +192,9 @@ public class PlanPage extends AppCompatActivity {
                 plansList.clear();
                 for (DocumentSnapshot snapshot : documentSnapshots){
                     plansList.add(snapshot.getString("tripName"));
+                    Log.i("plans - ", snapshot.getString("tripName"));
                 }
+                mAdapter.notifyDataSetChanged();
             }
         });
         return plansList;
@@ -209,6 +208,7 @@ public class PlanPage extends AppCompatActivity {
                 for (DocumentSnapshot snapshot : documentSnapshots){
                     plansColor.add(snapshot.getString("color"));
                 }
+                mAdapter.notifyDataSetChanged();
             }
         });
         return plansColor;
