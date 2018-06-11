@@ -34,7 +34,6 @@
         <activity android:name=".PlaceDetails" />
         <activity android:name=".PlanPage"></activity>
         <activity android:name=".PlanDetails" />
-
     </application>
 
 </manifest>

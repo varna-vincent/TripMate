@@ -38,12 +38,19 @@ public class PlanDetails extends AppCompatActivity {
     PlaceDetails pp = new PlaceDetails();
     private String userEmail;
     private String userName;
+  
+    final ArrayList<String> ITEMS = new ArrayList<String>();
 
+    Button deleteButton;
+    Button shareButton;
+
+    Boolean deleteMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_plan_details);
+
         planName = getIntent().getExtras().getString("plan");
 
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
@@ -131,5 +138,4 @@ public class PlanDetails extends AppCompatActivity {
         });
         return dates;
     }
-
 }

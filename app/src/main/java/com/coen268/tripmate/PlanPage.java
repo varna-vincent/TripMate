@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -18,11 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.coen268.tripmate.models.PlaceResponse;
@@ -49,7 +45,6 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
@@ -90,12 +85,10 @@ public class PlanPage extends AppCompatActivity {
         }
         planNameRef = rootRef.collection("Plans").document(userEmail).collection("userPlans");
 
-//        placeResponseList = new ArrayList<>();
         ArrayList<String> namesList = new ArrayList<String>();
 
         plansList = retrieveUserPlans();
         plansColor = retrieveUserPlansColors();
-//        PlaceResponse temp = new PlaceResponse();
         mAdapter.notifyDataSetChanged();
 
     }
@@ -128,7 +121,6 @@ public class PlanPage extends AppCompatActivity {
         startActivity(new Intent(this, Login.class));
     }
 
-
     private class PlaceRecyclerAdapter extends RecyclerView.Adapter<PlaceCardHolder> {
 
         @NonNull
@@ -141,7 +133,6 @@ public class PlanPage extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull PlaceCardHolder holder, int position) {
-
             Log.i(HOME_PLACES, plansList.get(position));
             holder.getPlaceCardCaption().setText(plansList.get(position));
             setPlaceItemClickListener(holder.getParentLayout(), plansList.get(position));
@@ -218,12 +209,9 @@ public class PlanPage extends AppCompatActivity {
                     plansColor.add(snapshot.getString("color"));
                 }
                 mAdapter.notifyDataSetChanged();
-
             }
         });
         return plansColor;
     }
-
-
 }
 
