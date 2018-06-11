@@ -171,7 +171,7 @@ public class Home extends AppCompatActivity  {
         }
     }
     public void search(View view) {
-        Intent intent = new Intent(this, PlaceDetails.class);
+        Intent intent = new Intent(this, com.coen268.tripmate.PlaceFragment.class);
         intent.putExtra(PLACE_ID, "ChIJhYiFmCAKlVQRjC7EI-INETU");
         startActivity(intent);
     }

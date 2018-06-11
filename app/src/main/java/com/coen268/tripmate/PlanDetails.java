@@ -39,12 +39,12 @@ public class PlanDetails extends AppCompatActivity {
     private String userEmail;
     private String userName;
   
-    final ArrayList<String> ITEMS = new ArrayList<String>();
+    //final ArrayList<String> ITEMS = new ArrayList<String>();
 
-    Button deleteButton;
-    Button shareButton;
+   // Button deleteButton;
+    //Button shareButton;
 
-    Boolean deleteMode = false;
+    //Boolean deleteMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
