@@ -208,28 +208,28 @@ public class PlaceDetails extends AppCompatActivity {
                 redButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_red));
+                        travelPlan.setColor(getResources().getColor( R.color.pale_red));
                     }
                 });
 
                 blueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_blue));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_blue));
                     }
                 });
 
                 greenButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_green));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_green));
                     }
                 });
 
                 yellowButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_yellow));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_yellow));
                     }
                 });
 
