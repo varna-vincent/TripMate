@@ -32,22 +32,24 @@ public class GeocodingLocation extends AppCompatActivity {
                         sb.append(address.getLatitude());
                         sb.append(",");
                         sb.append(address.getLongitude());
-
                         result = sb.toString();
+                        Log.d("LatitudeLongitude", result);
+
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "Unable to connect to Geocoder", e);
                 } finally {
                     Message message = Message.obtain();
                     message.setTarget(handler);
+                    Bundle bundle;
                     if (result != null) {
                         message.what = 1;
-                        Bundle bundle = new Bundle();
+                        bundle = new Bundle();
                         bundle.putString("address", result);
                         message.setData(bundle);
                     } else {
                         message.what = 1;
-                        Bundle bundle = new Bundle();
+                        bundle = new Bundle();
                         bundle.putString("address", result);
                         message.setData(bundle);
                     }

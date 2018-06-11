@@ -29,7 +29,7 @@ import java.util.List;
 public class PlaceFragment extends AppCompatActivity {
 
     Button firstFragment, secondFragment;
-    String latlng = "";
+    String input;
     private List<PlaceResponse> placeResponseList;
 
     @Override
@@ -41,22 +41,22 @@ public class PlaceFragment extends AppCompatActivity {
         firstFragment = (Button) findViewById(R.id.firstFragment);
         secondFragment = (Button) findViewById(R.id.secondFragment);
 
-        GeocodingLocation locationAddress = new GeocodingLocation();
+       /* GeocodingLocation locationAddress = new GeocodingLocation();
         locationAddress.getAddressFromLocation("Sydney",
                 getApplicationContext(), new GeocoderHandler());
+                */
 
-        Log.d("LatLng", latlng);
-        fetchPlaces(latlng);
+        input = "Sydney";
+        fetchPlaces(input);
 
 
         firstFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                loadFragment(new PlacesList(),0);
+                loadFragment(new PlacesList(), 0);
             }
         });
-
 
 
         secondFragment.setOnClickListener(new View.OnClickListener() {
@@ -69,20 +69,19 @@ public class PlaceFragment extends AppCompatActivity {
 
     }
 
-    private void fetchPlaces(String latlng) {
+    private void fetchPlaces(String input) {
         placeResponseList = new ArrayList<>();
         RequestQueue queue = Volley.newRequestQueue(this);
         JSONObject o = new JSONObject();
-        StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=");
-        stringBuilder.append(latlng);
-        stringBuilder.append("&radius=100000&type=museum&key=");
-        stringBuilder.append("AIzaSyB10cSEJ8OT8PQ4yX3ZcQSmPcMoEHvv7kg");
+        StringBuilder stringBuilder = new StringBuilder("https://maps.googleapis.com/maps/api/place/textsearch/json?query=museums+in+");
+        stringBuilder.append(input);
+        stringBuilder.append("&key=AIzaSyAIashPBJ0qlaSCq4P0fgGy-vQkOLrtM9s");
+        Log.d("REQUEST", stringBuilder.toString());
 
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
                 Request.Method.POST,
-              //  stringBuilder.toString(),
-                "https://maps.googleapis.com/maps/api/place/nearbysearch/json?location="+latlng+"&radius=100000&type=museum&key=AIzaSyB10cSEJ8OT8PQ4yX3ZcQSmPcMoEHvv7kg",
+                 stringBuilder.toString(),
                 o,
                 new Response.Listener<JSONObject>() {
 
@@ -92,7 +91,7 @@ public class PlaceFragment extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
                         Log.d("EXAMPLE", "Register Response: " + response.toString());
                         JSONArray jsonArray = response.optJSONArray("results");
-                        for(int i=0; i<jsonArray.length(); i++){
+                        for (int i = 0; i < jsonArray.length(); i++) {
                             try {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 JSONObject geometry = jsonObject.getJSONObject("geometry");
@@ -107,7 +106,7 @@ public class PlaceFragment extends AppCompatActivity {
                                 String name = jsonObject.getString("name");
                                 String lat = location.getString("lat");
                                 String lng = location.getString("lng");
-                                Log.d("Output", name + lat +lng);
+                                Log.d("Output", name + lat + lng);
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -142,52 +141,53 @@ public class PlaceFragment extends AppCompatActivity {
         ArrayList<String> lng;
 
 
-        if(flag == 0){
+        if (flag == 0) {
             bundle = new Bundle();
             placename = new ArrayList<String>();
             idList = new ArrayList<String>();
-            for( int i = 0; i < placeResponseList.size(); i++ ) {
+            for (int i = 0; i < placeResponseList.size(); i++) {
                 idList.add(placeResponseList.get(i).getId());
                 placename.add(placeResponseList.get(i).getName());
             }
-            bundle.putStringArrayList("id",idList);
+            bundle.putStringArrayList("id", idList);
             bundle.putStringArrayList("name", placename);
-        }else {
+        } else {
             bundle = new Bundle();
-            placename  = new ArrayList<>();
+            placename = new ArrayList<>();
             lat = new ArrayList<>();
             lng = new ArrayList<>();
-            for(int i = 0; i < placeResponseList.size(); i++){
+            for (int i = 0; i < placeResponseList.size(); i++) {
                 placename.add(placeResponseList.get(i).getName());
                 lat.add(placeResponseList.get(i).getLatitude());
                 lng.add(placeResponseList.get(i).getLongitude());
             }
-            bundle.putStringArrayList("place name",placename);
+            bundle.putStringArrayList("place name", placename);
             bundle.putStringArrayList("latitudes", lat);
             bundle.putStringArrayList("longitudes", lng);
         }
 
-       // FragmentManager fm = getFragmentManager();
+        // FragmentManager fm = getFragmentManager();
         fragment.setArguments(bundle);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.frameLayout, fragment);
         fragmentTransaction.commit(); // save the changes
     }
 
-
+/*
     protected class GeocoderHandler extends Handler {
+
         @Override
         public void handleMessage(Message message) {
-            String locationAddress;
+
             switch (message.what) {
                 case 1:
                     Bundle bundle = message.getData();
-                    locationAddress = bundle.getString("address");
+                    latlng = bundle.getString("address");
                     break;
                 default:
-                    locationAddress = null;
+                    latlng = "KU6 BHI";
             }
-            latlng = locationAddress;
         }
     }
+    */
 }
