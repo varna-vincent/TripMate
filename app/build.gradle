@@ -3,6 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 26
     defaultConfig {
+        multiDexEnabled true
         applicationId "com.coen268.tripmate"
         minSdkVersion 16
         targetSdkVersion 26
@@ -23,6 +24,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth:16.0.1'
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     implementation 'com.google.firebase:firebase-database:11.8.0'
@@ -37,8 +39,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:15.0.1'
     implementation 'com.firebaseui:firebase-ui-auth:4.0.1'
     implementation 'com.firebaseui:firebase-ui-firestore:4.0.1'
+    implementation 'com.android.volley:volley:1.0.0'
     implementation project(':slideDateTimePicker')
-
 }
 
 apply plugin: 'com.google.gms.google-services'

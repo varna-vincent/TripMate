@@ -1,6 +1,7 @@
 package com.coen268.tripmate;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -97,6 +98,17 @@ public class PlaceDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_details);
+
+
+        Button gotoPlans = findViewById(R.id.plan);
+
+        gotoPlans.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent plans = new Intent(PlaceDetails.this,PlanPage.class);
+                startActivity(plans);
+            }
+        });
 
         //Retrieve User  Details
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
@@ -256,7 +268,8 @@ public class PlaceDetails extends AppCompatActivity {
     //Function to create a new plan for the user
     private void addPlan(final String planName){
         String planId = planNameRef.document().getId();
-        TravelPlan travelPlan = new TravelPlan(planName,planId);
+        travelPlan.setTripId(planId);
+        travelPlan.setTripName(planName);
         planNameRef.document(planName).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
