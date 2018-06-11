@@ -20,7 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PlanDetails extends AppCompatActivity {
+public class PlanDetails extends NavigationDrawer {
 
     ArrayAdapter<String> listAdapter;
     ListView myList;
@@ -49,7 +49,8 @@ public class PlanDetails extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_plan_details);
+        getLayoutInflater().inflate(R.layout.activity_plan_details, frameLayout);
+        //setContentView(R.layout.activity_plan_details);
 
         planName = getIntent().getExtras().getString("plan");
 
