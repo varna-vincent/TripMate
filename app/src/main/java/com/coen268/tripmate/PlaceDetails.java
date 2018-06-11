@@ -12,13 +12,13 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.Spinner;
-import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.coen268.tripmate.models.DestDetails;
@@ -46,8 +46,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
 import static com.coen268.tripmate.util.Constants.PLACE_NAME;
@@ -64,8 +67,19 @@ public class PlaceDetails extends AppCompatActivity {
     private ArrayList<String> plansList = new ArrayList<>();
     private Button button;
     private Button button1;
+    private Button button2;
+
+    private String destinationName;
+    private Button redButton;
+    private Button blueButton;
+    private Button greenButton;
+    private Button yellowButton;
+
     private TextView textView;
     private TextView textView1;
+    private Button setDnT;
+
+    private TravelPlan travelPlan;
 
     protected GeoDataClient mGeoDataClient;
     CharSequence toastMsg;
@@ -75,6 +89,8 @@ public class PlaceDetails extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_place_details);
+
+        //Retrieve User  Details
         GoogleSignInAccount googleSignInAccount = GoogleSignIn.getLastSignedInAccount(this);
         if(googleSignInAccount!=null){
             userEmail = googleSignInAccount.getEmail();
@@ -102,34 +118,25 @@ public class PlaceDetails extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.addToPlan);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(PlaceDetails.this);
-                builder.setTitle("Create a New Plan");
+            public void onClick(final View v) {
+                final AlertDialog builder = new AlertDialog.Builder(PlaceDetails.this).create();
+                final View addPlan = View.inflate(PlaceDetails.this, R.layout.addplans_dialog, null);
+                button = addPlan.findViewById(R.id.add);
+                button1 = addPlan.findViewById(R.id.create);
+                button2 = addPlan.findViewById(R.id.cancel);
 
-                TableLayout tableLayout = new TableLayout(PlaceDetails.this);
-                TableRow tableRow = new TableRow(PlaceDetails.this);
-                textView = new TextView(PlaceDetails.this);
-                textView1 = new TextView(PlaceDetails.this);
-                textView.setText("Add to existing plan");
-                textView1.setText("Create new plan");
-                button = new Button(PlaceDetails.this);
-                button1 = new Button(PlaceDetails.this);
-                button.setText("Add");
-                button1.setText("Create and Add");
-                spinner = new Spinner(PlaceDetails.this);
-                editText = new EditText(PlaceDetails.this);
+                spinner = addPlan.findViewById(R.id.spinner);
+                editText = addPlan.findViewById(R.id.edittext);
                 editText.setInputType(InputType.TYPE_CLASS_TEXT|InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
-                //  ll.addView(editText);
-                tableRow.addView(textView);
-                tableRow.addView(spinner);
-                tableRow.addView(button);
-                TableRow tableRow1 = new TableRow(PlaceDetails.this);
-                tableRow1.addView(textView1);
-                tableRow1.addView(editText);
-                tableRow1.addView(button1);
-                tableLayout.addView(tableRow);
-                tableLayout.addView(tableRow1);
-                builder.setView(tableLayout);
+
+                redButton = addPlan.findViewById(R.id.btn_pale_red);
+                blueButton = addPlan.findViewById(R.id.btn_pale_blue);
+                greenButton = addPlan.findViewById(R.id.btn_pale_green);
+                yellowButton = addPlan.findViewById(R.id.btn_pale_yellow);
+
+                travelPlan = new TravelPlan();
+
+                //Retrieve plans created by user and populate spinner
                 planNameRef.addSnapshotListener(new EventListener<QuerySnapshot>() {
                     @Override
                     public void onEvent(QuerySnapshot documentSnapshots, FirebaseFirestoreException e) {
@@ -142,34 +149,65 @@ public class PlaceDetails extends AppCompatActivity {
                         spinner.setAdapter(adapter);
                     }
                 });
+                //On Add to Plan button click
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String planName = spinner.getSelectedItem().toString();
                         destNameRef = planNameRef.document(planName).collection("destinations");
-                        String destId = destNameRef.document().getId();
-                        Date date = new Date();
-                        String destinationName = ((TextView) findViewById(R.id.placeName)).getText().toString();
-                        DestDetails destDetails = new DestDetails(destinationName, date);
-                        destNameRef.document(destId).set(destDetails);
+                        builder.dismiss();
+                        setDateandTime();
                     }
                 });
+                //On Create Plan and Add button click
                 button1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         String planName = editText.getText().toString();
                         addPlan(planName);
+                        builder.dismiss();
+                        setDateandTime();
+
+                    }
+                });
+                //On Cancel button click
+                button2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        builder.dismiss();
                     }
                 });
 
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                redButton.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_red));
                     }
                 });
-                AlertDialog alertDialog = builder.create();
-                alertDialog.show();
+
+                blueButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_blue));
+                    }
+                });
+
+                greenButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_green));
+                    }
+                });
+
+                yellowButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        travelPlan.setColor(getResources().getString(0 + R.color.pale_yellow));
+                    }
+                });
+
+                builder.setView(addPlan);
+                builder.show();
             }
         });
     }
@@ -185,6 +223,7 @@ public class PlaceDetails extends AppCompatActivity {
 
                     Place myPlace = places.get(0);
                     updatePlaceDetailsUI(myPlace);
+                    destinationName = myPlace.getName().toString();
                     Log.i(PLACE_NAME, "Place found: " + myPlace.getName());
                     places.release();
                 } else {
@@ -198,17 +237,16 @@ public class PlaceDetails extends AppCompatActivity {
         });
     }
 
+    //Function to create a new plan for the user
     private void addPlan(final String planName){
         String planId = planNameRef.document().getId();
-        TravelPlan travelPlan = new TravelPlan(planName,planId);
-        planNameRef.document(planId).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
+        travelPlan.setTripName(planName);
+        travelPlan.setTripId(planId);
+//        TravelPlan travelPlan = new TravelPlan(planName,planId);
+        planNameRef.document(planName).set(travelPlan).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
                 destNameRef = planNameRef.document(planName).collection("destinations");
-                String destId = destNameRef.document().getId();
-                Date date = new Date();
-                DestDetails destDetails = new DestDetails("destname",date);
-                destNameRef.document(destId).set(destDetails);
                 Log.d("TAG", "Success!");
             }
         });
@@ -277,4 +315,44 @@ public class PlaceDetails extends AppCompatActivity {
     }
 
 
+    //Select Date and Time and save destination details
+    private void setDateandTime(){
+        final AlertDialog builder1 = new AlertDialog.Builder(PlaceDetails.this).create();
+        final View dialogView = View.inflate(PlaceDetails.this, R.layout.date_layout, null);
+        setDnT = dialogView.findViewById(R.id.date_set);
+        setDnT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final DatePicker editDate = (DatePicker) dialogView.findViewById(R.id.date_picker);
+                builder1.dismiss();
+                final AlertDialog builder2 = new AlertDialog.Builder(PlaceDetails.this).create();
+                final View dialogView1 = View.inflate(PlaceDetails.this, R.layout.time_layout, null);
+                Button setTime = dialogView1.findViewById(R.id.time_set);
+                setTime.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        TimePicker editTime = (TimePicker) dialogView1.findViewById(R.id.time_picker);
+                        Calendar calendar = new GregorianCalendar(editDate.getYear(),
+                                editDate.getMonth(),
+                                editDate.getDayOfMonth(),
+                                editTime.getCurrentHour(),
+                                editTime.getCurrentMinute());
+                        SimpleDateFormat sdf = new SimpleDateFormat("EEE, MMM d, ''yy 'at' h:mm a");
+                        Date day = calendar.getTime();
+                        String formatedDate = sdf.format(day);
+                        DestDetails destDetails = new DestDetails(destinationName, day);
+                        String destId = destNameRef.document().getId();
+                        destNameRef.document(destId).set(destDetails);
+                        builder2.dismiss();
+                    }
+                });
+                builder2.setView(dialogView1);
+                builder2.show();
+
+            }
+        });
+        builder1.setView(dialogView);
+        builder1.show();
+    }
 }

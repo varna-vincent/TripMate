@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -29,7 +30,6 @@ import com.google.android.gms.location.places.PlacePhotoMetadataResponse;
 import com.google.android.gms.location.places.PlacePhotoResponse;
 import com.google.android.gms.location.places.Places;
 
-import com.coen268.tripmate.util.Constants;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.PlaceDetectionClient;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -44,10 +44,14 @@ import static com.coen268.tripmate.util.Constants.PLACE_ID;
 
 public class Home extends AppCompatActivity {
 
+    private static final String LIST_STATE_KEY = "list-state";
     private RecyclerView nearbyPlacesView;
     private GeoDataClient mGeoDataClient;
     private PlaceDetectionClient mPlaceDetectionClient;
     private List<PlaceResponse> placeResponseList;
+    private Bundle mBundleRecyclerViewState;
+    private PlaceRecyclerAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +64,40 @@ public class Home extends AppCompatActivity {
 
         // Construct a PlaceDetectionClient.
         mPlaceDetectionClient = Places.getPlaceDetectionClient(this, null);
-        fetchPlacesNearMe();
+
 
         nearbyPlacesView = (RecyclerView) findViewById(R.id.nearby_places_recyclerview);
         nearbyPlacesView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        nearbyPlacesView.setAdapter(new PlaceRecyclerAdapter());
+        mAdapter = new PlaceRecyclerAdapter();
+        nearbyPlacesView.setAdapter(mAdapter);
+        fetchPlacesNearMe(mAdapter);
 
     }
 
-    private void fetchPlacesNearMe() {
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        // save RecyclerView state
+        mBundleRecyclerViewState = new Bundle();
+        Parcelable listState = nearbyPlacesView.getLayoutManager().onSaveInstanceState();
+        mBundleRecyclerViewState.putParcelable(LIST_STATE_KEY, listState);
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        // restore RecyclerView state
+        if (mBundleRecyclerViewState != null) {
+            Parcelable listState = mBundleRecyclerViewState.getParcelable(LIST_STATE_KEY);
+            nearbyPlacesView.getLayoutManager().onRestoreInstanceState(listState);
+        }
+    }
+
+    private void fetchPlacesNearMe(final PlaceRecyclerAdapter adapter) {
 
         Task<PlaceLikelihoodBufferResponse> placeResult = null;
         placeResponseList = new ArrayList<>();
@@ -93,13 +122,17 @@ public class Home extends AppCompatActivity {
 
                         Log.i(HOME_PLACES, String.format("Place '%s' has likelihood: %g",placeLikelihood.getPlace().getName(),placeLikelihood.getLikelihood()));
                     }
-
+                    adapter.notifyDataSetChanged();
                     likelyPlaces.release();
                 }
             });
         }
     }
-
+    public void search(View view) {
+        Intent intent = new Intent(this, com.coen268.tripmate.PlaceFragment.class);
+        intent.putExtra(PLACE_ID, "ChIJhYiFmCAKlVQRjC7EI-INETU");
+        startActivity(intent);
+    }
     private void setPhotoByPlaceId(final ImageView imageView, String placeId) {
 
         final Task<PlacePhotoMetadataResponse> photoMetadataResponse = mGeoDataClient.getPlacePhotos(placeId);
