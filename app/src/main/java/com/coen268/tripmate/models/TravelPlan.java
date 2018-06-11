@@ -1,6 +1,10 @@
 package com.coen268.tripmate.models;
 
-public class TravelPlan {
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class TravelPlan implements Serializable {
 
     private String tripId;
 
@@ -11,9 +15,8 @@ public class TravelPlan {
 
     public TravelPlan() { this.color = -5052532; }
 
-    public TravelPlan(String tripName, String tripId){
+    public TravelPlan(String tripName){
         this.tripName=tripName;
-        this.tripId = tripId;
     }
 
     public String getTripId() {
