@@ -56,7 +56,7 @@ import java.util.GregorianCalendar;
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
 import static com.coen268.tripmate.util.Constants.PLACE_NAME;
 
-public class PlaceDetails extends NavigationDrawer {
+public class PlaceDetails extends AppCompatActivity {
     private String userName;
     private String userEmail;
     private String planName;
@@ -97,8 +97,7 @@ public class PlaceDetails extends NavigationDrawer {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_place_details, frameLayout);
-        //setContentView(R.layout.activity_place_details);
+        setContentView(R.layout.activity_place_details);
 
 
         Button gotoPlans = findViewById(R.id.plan);
@@ -209,28 +208,28 @@ public class PlaceDetails extends NavigationDrawer {
                 redButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_red));
+                        travelPlan.setColor(getResources().getColor( R.color.pale_red));
                     }
                 });
 
                 blueButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_blue));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_blue));
                     }
                 });
 
                 greenButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_green));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_green));
                     }
                 });
 
                 yellowButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        travelPlan.setColor(getResources().getString(0 + R.color.pale_yellow));
+                        travelPlan.setColor(getResources().getColor(R.color.pale_yellow));
                     }
                 });
 

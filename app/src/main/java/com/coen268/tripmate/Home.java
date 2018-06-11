@@ -2,7 +2,6 @@ package com.coen268.tripmate;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -49,12 +48,11 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 import static com.coen268.tripmate.util.Constants.HOME_PLACES;
 import static com.coen268.tripmate.util.Constants.PLACE_ID;
 
-public class Home extends NavigationDrawer {
+public class Home extends AppCompatActivity  {
 
     private static final String LIST_STATE_KEY = "list-state";
     private RecyclerView nearbyPlacesView;
@@ -69,10 +67,8 @@ public class Home extends NavigationDrawer {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        //LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        //View contentView = inflater.inflate(R.layout.activity_home, null, false);
-        //content.addView(contentView, 0);
-        getLayoutInflater().inflate(R.layout.activity_home, frameLayout);
+        setContentView(R.layout.activity_home);
+
         // Construct a GeoDataClient.
         mGeoDataClient = Places.getGeoDataClient(this, null);
 
